@@ -1,0 +1,14 @@
+build/
+_*
+\#*
+\.\#*
+.merlin
+*~
+TAGS
+tags
+.envrc
+.direnv/
+.DS_Store
+*.install
+result
+result-*
