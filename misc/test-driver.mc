@@ -1,10 +1,11 @@
 -- A minimal test driver for the mcore files in this repository.
 --
--- The externals declared in `src/lib/stats.mc` are not known by the
--- standard Miking compiler, thus `mi compile --test` cannot run their
--- tests. This driver compiles and runs each file given on the command
--- line with its utests enabled, using the external implementations
--- of the standard library extended with `miStatsExtMap`.
+-- The externals declared in `src/lib/stats.mc` and `src/lib/linalg.mc`
+-- are not known by the standard Miking compiler, thus `mi compile
+-- --test` cannot run their tests. This driver compiles and runs each
+-- file given on the command line with its utests enabled, using the
+-- external implementations of the standard library extended with
+-- `miStatsExtMap` and `miStatsLinalgExtMap`.
 --
 -- It follows (a subset of) the loader-based pipeline used by `mi`
 -- (`compileViaLoader` in `src/main/compile.mc` in the miking
@@ -35,6 +36,7 @@ include "ocaml/external-includes.mc"
 include "ocaml/mcore.mc"
 
 include "mi-stats::stats.ext-ocaml.mc"
+include "mi-stats::linalg.ext-ocaml.mc"
 
 lang MiStatsTestDriver =
   ComposedMCoreLoader + UtestLoader +
@@ -76,9 +78,13 @@ let testFile : String -> Bool = lam file.
     let res = cunit.run "" [] in
     cunit.cleanup ();
     res in
-  let hooks =
-    { mkEmptyHooks compileAndRun with
-      externalImpls = mapUnion globalExternalImplsMap miStatsExtMap } in
+  let externalImpls = foldl mapUnion globalExternalImplsMap
+    [ miStatsExtMap
+    , miStatsLinalgExtMap
+    ]
+  in
+  let hooks = { mkEmptyHooks compileAndRun
+    with externalImpls = externalImpls } in
   let res : ExecResult = compileMCore ast hooks in
   print res.stdout;
   printError res.stderr;

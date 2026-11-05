@@ -17,3 +17,11 @@ external mi_bernoulli_lpmf : bool -> (float [@unboxed]) -> (float [@unboxed])
 external mi_bernoulli_rng : (float [@unboxed]) -> mi_rng -> bool
   = "mi_bernoulli_rng_wrapped" "mi_bernoulli_rng_unwrapped" [@@noalloc]
 let mi_bernoulli_rng_ : float -> bool = fun p -> mi_bernoulli_rng p !global_rng
+
+type mi_matrix
+
+external mi_matrix_of_column : float array -> mi_matrix = "mi_matrix_of_column_stub"
+external mi_matrix_of_rows : float array array -> mi_matrix = "mi_matrix_of_rows_stub"
+external mi_matrix_to_column : mi_matrix -> float array = "mi_matrix_to_column_stub"
+external mi_matrix_to_rows : mi_matrix -> float array array = "mi_matrix_to_rows_stub"
+external mi_matrix_mul : mi_matrix -> mi_matrix -> mi_matrix = "mi_matrix_mul_stub"
