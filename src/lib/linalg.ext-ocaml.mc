@@ -54,5 +54,12 @@ let miStatsLinalgExtMap =
         libraries = ["mi_stats"],
         cLibraries = []
       }
+    ]),
+    ("externalMiStatsMatrixExp", [
+      { expr = "Mi_stats.mi_matrix_exp",
+        ty = tyarrows_ [tyMatrix, tyMatrix],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
     ])
   ]

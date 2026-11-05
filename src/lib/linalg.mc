@@ -9,6 +9,7 @@ include "bool.mc"
 include "float.mc"
 include "seq.mc"
 include "string.mc"
+include "ext/math-ext.mc"
 
 -- Handle to an Eigen matrix owned by the `mi_stats` OCaml library.
 type MiStatsEigenMatrix
@@ -61,40 +62,70 @@ let miStatsMatrixVectorMulExn : MiStatsMatrix -> MiStatsVector -> MiStatsVector 
         , " columns cannot multiply a vector of length ", int2string x.length
         ])
 
+-- Computes `exp(A)`. Errors if `A` is not square
+external externalMiStatsMatrixExp : MiStatsEigenMatrix -> MiStatsEigenMatrix
+let miStatsMatrixExp : MiStatsMatrix -> MiStatsMatrix =
+  lam a. 
+    if eqi a.cols a.rows then
+      { cols = a.cols
+      , rows = a.rows
+      , data = externalMiStatsMatrixExp a.data
+      }
+    else
+      error (join
+        [ "externalMiStatsMatrixExp: a matrix with "
+        , int2string a.cols
+        , "cols and "
+        , int2string a.rows
+        , "rows is not square and has no exponential"
+        ])
+
 mexpr
 
-let _eqVector = eqSeq eqf in
+let eqVector = eqSeq eqf in
+let eqMatrix = eqSeq eqVector in
+
+let _eqf = eqfApprox 1e-15 in
+let _eqVector = eqSeq _eqf in
 let _eqMatrix = eqSeq _eqVector in
 
 -- Testing vector conversions
-utest miStatsVectorToSeq (miStatsVectorOfSeq [1., 2., 3.]) with [1., 2., 3.] using _eqVector in
-utest miStatsVectorToSeq (miStatsVectorOfSeq []) with [] using _eqVector in
+utest miStatsVectorToSeq (miStatsVectorOfSeq [1., 2., 3.]) with [1., 2., 3.] using eqVector in
+utest miStatsVectorToSeq (miStatsVectorOfSeq []) with [] using eqVector in
 utest (miStatsVectorOfSeq [1., 2., 3.]).length with 3 in
 utest (miStatsVectorOfSeq []).length with 0 in
 
 -- Testing matrix conversions
 let m23 = miStatsMatrixOfSeqExn [[1., 2., 3.], [4., 5., 6.]] in
-utest miStatsMatrixToSeq m23 with [[1., 2., 3.], [4., 5., 6.]] using _eqMatrix in
+utest miStatsMatrixToSeq m23 with [[1., 2., 3.], [4., 5., 6.]] using eqMatrix in
 utest m23.rows with 2 in
 utest m23.cols with 3 in
 
 let m00 = miStatsMatrixOfSeqExn [] in
-utest miStatsMatrixToSeq m00 with [] using _eqMatrix in
+utest miStatsMatrixToSeq m00 with [] using eqMatrix in
 utest m00.rows with 0 in
 utest m00.cols with 0 in
 
 let m20 = miStatsMatrixOfSeqExn [[], []] in
-utest miStatsMatrixToSeq m20 with [[], []] using _eqMatrix in
+utest miStatsMatrixToSeq m20 with [[], []] using eqMatrix in
 utest m20.rows with 2 in
 utest m20.cols with 0 in
 
 -- Testing the matrix-vector product
 let product = miStatsMatrixVectorMulExn m23 (miStatsVectorOfSeq [1., 2., 3.]) in
-utest miStatsVectorToSeq product with [14., 32.] using _eqVector in
+utest miStatsVectorToSeq product with [14., 32.] using eqVector in
 utest product.length with 2 in
 
 let identity = miStatsMatrixOfSeqExn [[1., 0.], [0., 1.]] in
 let identityProduct = miStatsMatrixVectorMulExn identity (miStatsVectorOfSeq [7., 8.]) in
-utest miStatsVectorToSeq identityProduct with [7., 8.] using _eqVector in
+utest miStatsVectorToSeq identityProduct with [7., 8.] using eqVector in
+
+let zeros = miStatsMatrixOfSeqExn [[0., 0.], [0., 0.]] in
+let zeroExp = miStatsMatrixExp zeros in 
+utest miStatsMatrixToSeq zeroExp with miStatsMatrixToSeq identity using eqMatrix in
+
+let diagonal = miStatsMatrixOfSeqExn [[1., 0.], [0., 3.]] in
+let diagonalExp = miStatsMatrixExp diagonal in 
+utest miStatsMatrixToSeq diagonalExp with [[exp 1., 0.], [0., exp 3.]] using _eqMatrix in
 
 ()

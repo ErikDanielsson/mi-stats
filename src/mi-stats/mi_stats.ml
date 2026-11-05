@@ -25,3 +25,4 @@ external mi_matrix_of_rows : float array array -> mi_matrix = "mi_matrix_of_rows
 external mi_matrix_to_column : mi_matrix -> float array = "mi_matrix_to_column_stub"
 external mi_matrix_to_rows : mi_matrix -> float array array = "mi_matrix_to_rows_stub"
 external mi_matrix_mul : mi_matrix -> mi_matrix -> mi_matrix = "mi_matrix_mul_stub"
+external mi_matrix_exp : mi_matrix -> mi_matrix = "mi_matrix_exp_stub"

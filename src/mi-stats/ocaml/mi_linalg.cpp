@@ -92,4 +92,9 @@ extern "C" CAMLprim value mi_matrix_mul_stub(value a, value b) {
   CAMLreturn(mi_matrix_alloc(mi_matrix_mul(Mi_matrix_val(a), Mi_matrix_val(b))));
 }
 
+extern "C" CAMLprim value mi_matrix_exp_stub(value a) {
+  CAMLparam1(a);
+  CAMLreturn(mi_matrix_alloc(mi_matrix_exp(Mi_matrix_val(a))));
+}
+
 #endif

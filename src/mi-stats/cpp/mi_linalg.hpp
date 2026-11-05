@@ -7,6 +7,7 @@
 #include <stan/math/prim/fun/to_array_2d.hpp>
 #include <stan/math/prim/fun/to_matrix.hpp>
 #include <stan/math/prim/fun/to_vector.hpp>
+#include <stan/math/prim/fun/matrix_exp.hpp>
 
 #include <vector>
 
@@ -32,6 +33,10 @@ inline std::vector<std::vector<double>> mi_matrix_to_rows(const mi_matrix &m) {
 
 inline mi_matrix mi_matrix_mul(const mi_matrix &a, const mi_matrix &b) {
   return stan::math::multiply(a, b);
+}
+
+inline mi_matrix mi_matrix_exp(const mi_matrix &a) {
+  return stan::math::matrix_exp(a);
 }
 
 #endif
