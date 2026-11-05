@@ -50,6 +50,22 @@ let miStatsMatrixToSeq : MiStatsMatrix -> [[Float]] = lam m.
 
 -- Computes `a * x`. Errors if `a` does not have one column per element of `x`.
 external externalMiStatsEigenMatrixMul : MiStatsEigenMatrix -> MiStatsEigenMatrix -> MiStatsEigenMatrix
+
+let miStatsMatrixMulExn : MiStatsMatrix -> MiStatsMatrix -> MiStatsMatrix =
+  lam a. lam b.
+    if eqi a.cols b.rows then
+      { rows = a.rows
+      , cols = b.cols
+      , data = externalMiStatsEigenMatrixMul a.data b.data
+      }
+    else
+      error (join
+        [ "miStatsMatrixMulExn: a matrix with ", int2string a.cols
+        , " columns cannot multiply a vector of matrix with ", int2string b.rows
+        , "rows"
+        ])
+
+
 let miStatsMatrixVectorMulExn : MiStatsMatrix -> MiStatsVector -> MiStatsVector =
   lam a. lam x.
     if eqi a.cols x.length then
@@ -111,21 +127,61 @@ utest miStatsMatrixToSeq m20 with [[], []] using eqMatrix in
 utest m20.rows with 2 in
 utest m20.cols with 0 in
 
--- Testing the matrix-vector product
+-- 
+-- Linear algebra operations
+--
+let simpleRange = lam n. range 0 n 1 in
+let zerosSeq = lam n. lam m. (make n (make m 0. )) in
+let zeros = lam n. lam m. miStatsMatrixOfSeqExn (zerosSeq n m) in
+let kindaKronDeltaSeq = lam n. lam v. lam i.
+  map (lam j. if eqi i j then v else 0.) (simpleRange n)
+in
+let identitySeq = lam n.
+  map (kindaKronDeltaSeq n 1.) (simpleRange n)
+in
+let identity = lam n.
+  miStatsMatrixOfSeqExn (identitySeq n)
+in
+let diagonalSeq = lam d.
+  let n = length d in
+  mapi (lam i. lam v. kindaKronDeltaSeq n v i) d
+in
+let diagonal = lam d. miStatsMatrixOfSeqExn (diagonalSeq d) in
+
+let z22 = zeros 2 2 in
+let i2 = identity 2 in
+let i4 = identity 4 in
+let z1010 = zeros 10 10 in
+let i10 = identity 10 in
+let d4 = diagonal [1., 2., 4., 0.] in
+
+-- Matrix-vector product
 let product = miStatsMatrixVectorMulExn m23 (miStatsVectorOfSeq [1., 2., 3.]) in
 utest miStatsVectorToSeq product with [14., 32.] using eqVector in
 utest product.length with 2 in
 
-let identity = miStatsMatrixOfSeqExn [[1., 0.], [0., 1.]] in
-let identityProduct = miStatsMatrixVectorMulExn identity (miStatsVectorOfSeq [7., 8.]) in
+let identityProduct = miStatsMatrixVectorMulExn i2 (miStatsVectorOfSeq [7., 8.]) in
 utest miStatsVectorToSeq identityProduct with [7., 8.] using eqVector in
 
-let zeros = miStatsMatrixOfSeqExn [[0., 0.], [0., 0.]] in
-let zeroExp = miStatsMatrixExp zeros in 
-utest miStatsMatrixToSeq zeroExp with miStatsMatrixToSeq identity using eqMatrix in
+-- Matrix-matrix product
+let product = miStatsMatrixMulExn d4 d4 in
+let rhs = miStatsMatrixToSeq (diagonal [1., 4., 16., 0.]) in
+utest miStatsMatrixToSeq product with rhs using eqMatrix in
 
-let diagonal = miStatsMatrixOfSeqExn [[1., 0.], [0., 3.]] in
-let diagonalExp = miStatsMatrixExp diagonal in 
-utest miStatsMatrixToSeq diagonalExp with [[exp 1., 0.], [0., exp 3.]] using _eqMatrix in
+let identityProduct = miStatsMatrixMulExn i4 d4  in
+utest miStatsMatrixToSeq identityProduct with miStatsMatrixToSeq d4 using eqMatrix in
+
+let identityProduct = miStatsMatrixMulExn d4 i4 in
+utest miStatsMatrixToSeq identityProduct with miStatsMatrixToSeq d4 using eqMatrix in
+
+-- Matrix exponential
+let zeroExp = miStatsMatrixExp z22 in 
+utest miStatsMatrixToSeq zeroExp with miStatsMatrixToSeq i2 using eqMatrix in
+
+let zeroExp = miStatsMatrixExp z1010 in 
+utest miStatsMatrixToSeq zeroExp with miStatsMatrixToSeq i10 using eqMatrix in
+
+let diagonalExp = miStatsMatrixExp d4 in 
+utest miStatsMatrixToSeq diagonalExp with diagonalSeq (map exp [1., 2., 4., 0.]) using _eqMatrix in
 
 ()
