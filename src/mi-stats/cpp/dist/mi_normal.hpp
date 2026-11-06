@@ -4,7 +4,7 @@
 #include <stan/math/prim/prob/normal_lpdf.hpp>
 #include <stan/math/prim/prob/normal_rng.hpp>
 
-#include "./mi_rng.hpp"
+#include "../mi_rng.hpp"
 
 inline double mi_normal_lpdf(double x, double mu, double sigma) {
    return stan::math::normal_lpdf(x, mu, sigma);

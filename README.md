@@ -14,26 +14,35 @@ The repository contains:
   `bernoulliLogPmf`, `miStatsSetSeed`, etc.).
 - `src/lib/stats.ext-ocaml.mc`: `miStatsExtMap`, the OCaml
   implementations of those externals.
+- `src/lib/linalg.mc`: types mirroring the C++ types used by Stan Math
+  (`MiStatsMatrix` for `Eigen::MatrixXd`, `MiStatsVector` for
+  `Eigen::VectorXd`, `MiStatsInt32Array` for `std::vector<int>`), and
+  conversions to and from sequences.
+- `src/lib/linalg.ext-ocaml.mc`: `miStatsLinalgExtMap`, the OCaml
+  implementations of the externals in `linalg.mc`.
 
 ## Using mi-stats from a compiler
 
-The externals in `stats.mc` are not known by the standard Miking
-compiler (`mi`). A compiler that wants to support them adds
-`miStatsExtMap` to the external implementations it passes to
-`compileMCore`:
+The externals in `stats.mc` and `linalg.mc` are not known by the
+standard Miking compiler (`mi`). A compiler that wants to support them
+adds `miStatsExtMap` and/or `miStatsLinalgExtMap` to the external
+implementations it passes to `compileMCore`. The two maps are
+independent, so a compiler adds only the ones it needs:
 
 ```
 include "ocaml/mcore.mc"
 include "ocaml/external-includes.mc"
 include "mi-stats::stats.ext-ocaml.mc"
+include "mi-stats::linalg.ext-ocaml.mc"
 
-let hooks =
-  { mkEmptyHooks compileOcaml with
-    externalImpls = mapUnion globalExternalImplsMap miStatsExtMap } in
+let externalImpls =
+  mapUnion (mapUnion globalExternalImplsMap miStatsExtMap) miStatsLinalgExtMap in
+let hooks = { mkEmptyHooks compileOcaml with externalImpls = externalImpls } in
 compileMCore ast hooks
 ```
 
-Programs compiled this way can then include `mi-stats::stats.mc`.
+Programs compiled this way can then include `mi-stats::stats.mc` and
+`mi-stats::linalg.mc`, respectively.
 This requires `mi-stats` to be present in `MCORE_LIBS`, and the
 `mi_stats` OCaml library to be findable by `ocamlfind` when the
 generated OCaml code is compiled.
@@ -58,7 +67,7 @@ export MCORE_LIBS=$MCORE_LIBS:mi-stats=$HOME/.local/lib/mcore/mi-stats
 ```
 
 `make test` uses `misc/test-driver.mc`, a small compiler that knows
-about `miStatsExtMap`, to compile and run the utests in `src/lib`.
+about both maps, to compile and run the utests in `src/lib`.
 
 ## Nix
 

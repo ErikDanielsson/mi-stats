@@ -2,4 +2,7 @@
 
 #include "./cpp/dist/mi_bernoulli.hpp"
 #include "./cpp/dist/mi_normal.hpp"
+#include "./cpp/linalg/mi_int_array.hpp"
+#include "./cpp/linalg/mi_matrix.hpp"
+#include "./cpp/linalg/mi_vector.hpp"
 #include "./cpp/mi_rng.hpp"
