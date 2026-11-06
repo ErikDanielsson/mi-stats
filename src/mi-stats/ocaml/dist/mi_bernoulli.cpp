@@ -1,8 +1,8 @@
 #ifndef MI_BERNOULLI_CPP
 #define MI_BERNOULLI_CPP
 
-#include "../cpp/mi_bernoulli.hpp"
-#include "./mi_rng.cpp"
+#include "../../cpp/dist/mi_bernoulli.hpp"
+#include "../mi_rng.cpp"
 
 extern "C" CAMLprim double mi_bernoulli_lpmf_unwrapped(value n, double theta) {
   return mi_bernoulli_lpmf(Bool_val(n), theta);

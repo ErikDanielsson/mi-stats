@@ -1,8 +1,8 @@
 #ifndef MI_NORMAL_CPP
 #define MI_NORMAL_CPP
 
-#include "../cpp/mi_normal.hpp"
-#include "./mi_rng.cpp"
+#include "../../cpp/dist/mi_normal.hpp"
+#include "../mi_rng.cpp"
 
 extern "C" CAMLprim double mi_normal_lpdf_unwrapped(double x, double mu, double sigma) {
   return mi_normal_lpdf(x, mu, sigma);
