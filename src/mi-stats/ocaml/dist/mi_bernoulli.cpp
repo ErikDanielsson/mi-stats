@@ -14,12 +14,12 @@ extern "C" CAMLprim value mi_bernoulli_lpmf_wrapped(value n, value theta) {
 }
 
 extern "C" CAMLprim value mi_bernoulli_rng_unwrapped(double theta, value mt) {
-  return Val_bool(mi_bernoulli_rng(theta, Mi_rng_val(mt)));
+  return Val_bool(mi_bernoulli_rng(theta, mi_custom_block_val<mi_rng>(mt)));
 }
 
 extern "C" CAMLprim value mi_bernoulli_rng_wrapped(value theta, value mt) {
   CAMLparam2(theta, mt);
-  CAMLreturn(Val_bool(mi_bernoulli_rng(Double_val(theta), Mi_rng_val(mt))));
+  CAMLreturn(Val_bool(mi_bernoulli_rng(Double_val(theta), mi_custom_block_val<mi_rng>(mt))));
 }
 
 #endif

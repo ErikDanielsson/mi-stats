@@ -14,12 +14,12 @@ extern "C" CAMLprim value mi_normal_lpdf_wrapped(value x, value mu, value sigma)
 }
 
 extern "C" CAMLprim double mi_normal_rng_unwrapped(double mu, double sigma, value mt) {
-  return mi_normal_rng(mu, sigma, Mi_rng_val(mt));
+  return mi_normal_rng(mu, sigma, mi_custom_block_val<mi_rng>(mt));
 }
 
 extern "C" CAMLprim value mi_normal_rng_wrapped(value mu, value sigma, value mt) {
   CAMLparam3(mu, sigma, mt);
-  CAMLreturn(caml_copy_double(mi_normal_rng(Double_val(mu), Double_val(sigma), Mi_rng_val(mt))));
+  CAMLreturn(caml_copy_double(mi_normal_rng(Double_val(mu), Double_val(sigma), mi_custom_block_val<mi_rng>(mt))));
 }
 
 #endif
