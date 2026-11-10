@@ -12,6 +12,14 @@ external mi_normal_rng : (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> (
   = "mi_normal_rng_wrapped" "mi_normal_rng_unwrapped" [@@noalloc]
 let mi_normal_rng_ : float -> float -> float = fun a b -> mi_normal_rng a b !global_rng
 
+external mi_gamma_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_gamma_lpdf_wrapped" "mi_gamma_lpdf_unwrapped" [@@noalloc]
+external mi_gamma_cdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_gamma_cdf_wrapped" "mi_gamma_cdf_unwrapped" [@@noalloc]
+external mi_gamma_rng : (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> (float [@unboxed])
+  = "mi_gamma_rng_wrapped" "mi_gamma_rng_unwrapped" [@@noalloc]
+let mi_gamma_rng_ : float -> float -> float = fun a b -> mi_gamma_rng a b !global_rng
+
 external mi_bernoulli_lpmf : bool -> (float [@unboxed]) -> (float [@unboxed])
   = "mi_bernoulli_lpmf_wrapped" "mi_bernoulli_lpmf_unwrapped" [@@noalloc]
 external mi_bernoulli_rng : (float [@unboxed]) -> mi_rng -> bool

@@ -33,6 +33,27 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalGammaLogPdf", [
+      { expr = "Mi_stats.mi_gamma_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalGammaCdf", [
+      { expr = "Mi_stats.mi_gamma_cdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalGammaSample", [
+      { expr = "Mi_stats.mi_gamma_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalNormalLogPdf", [
       { expr = "Mi_stats.mi_normal_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],

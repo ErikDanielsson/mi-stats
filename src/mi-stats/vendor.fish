@@ -58,7 +58,7 @@ echo "Finding required files"
 
 set includes $workDir $eigenDir $boostDir
 
-set -g dependencies (cpp -M -I$includes -DBOOST_MATH_STANDALONE $cppRoot \
+set -g dependencies (cpp -M -I$includes -DBOOST_MATH_STANDALONE -D_REENTRANT $cppRoot \
     | tail --lines=+2 \
     | string trim --chars ' \\' \
     | string split ' ')
