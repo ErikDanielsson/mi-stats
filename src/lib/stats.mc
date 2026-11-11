@@ -80,10 +80,11 @@ utest gammaCdf 2. 3. 1. with 0.800851726529 using _eqf in
 utest gammaCdf 1. 2. 0.5 with 0.632120558829 using _eqf in
 utest gammaSample 1. 1000000. with 0. using lam a. lam b. and (geqf a 0.) (ltf a 0.01) in
 
--- Testing Normal
+-- Testing Normal (the values distinguish mu and sigma, and sigma from the variance)
 utest normalPdf 0. 0.4472 0. with 0.8920891779996 using _eqf in
 utest exp (normalLogPdf 2. 1. 2.) with 0.3989422804 using _eqf in
 utest exp (normalLogPdf 1. 2. 3.) with 0.12098536226 using _eqf in
+utest normalPdf 2. 3. 1. with 0.125794409231 using _eqf in
 utest normalSample 0. 0.2 with 0. using lam a. lam b. or (leqf a b) (geqf a b) in
 
 -- Testing seed
