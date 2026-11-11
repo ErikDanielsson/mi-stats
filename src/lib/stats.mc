@@ -116,6 +116,16 @@ let poissonLogPmf : Float -> Int -> Float = lam lambda. lam x.
 let poissonSample : Float -> Int = lam lambda.
   externalPoissonSample lambda
 
+-- Uniform, with lower bound alpha and upper bound beta (as in Stan)
+external externalUniformLogPdf : Float -> Float -> Float -> Float
+external externalUniformSample ! : Float -> Float -> Float
+let uniformPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  exp (externalUniformLogPdf x alpha beta)
+let uniformLogPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  externalUniformLogPdf x alpha beta
+let uniformSample : Float -> Float -> Float = lam alpha. lam beta.
+  externalUniformSample alpha beta
+
 -- Seed
 external externalMiStatsSetSeed ! : Int -> ()
 -- Sets the seed used by the sampling functions in this file. Note
@@ -218,6 +228,13 @@ utest poissonPmf 2.5 4 with 0.133601885781 using _eqf in
 utest poissonPmf 0.4 4 with 0.000715008049 using _eqf in
 utest poissonLogPmf 4. 10 with -5.241468961877 using _eqf in
 utest poissonSample 2. with 0 using lam a. lam b. geqi a 0 in
+
+-- Testing Uniform (the values distinguish alpha and beta, and beta - alpha from 1 / (beta - alpha))
+utest uniformPdf 2. 5. 3. with 0.333333333333 using _eqf in
+utest uniformPdf 0.5 4. 1. with 0.285714285714 using _eqf in
+utest uniformLogPdf 0. 4. 1. with -1.386294361120 using _eqf in
+utest uniformLogPdf 2. 5. 1. with negf inf using eqf in
+utest uniformSample 2. 5. with 0. using lam a. lam b. and (geqf a 2.) (leqf a 5.) in
 
 -- Testing seed
 utest miStatsSetSeed 0; normalSample 0. 1.; normalSample 0. 1.

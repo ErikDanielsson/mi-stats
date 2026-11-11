@@ -69,3 +69,8 @@ external mi_poisson_lpmf : int -> (float [@unboxed]) -> (float [@unboxed])
 external mi_poisson_rng : (float [@unboxed]) -> mi_rng -> int
   = "mi_poisson_rng_wrapped" "mi_poisson_rng_unwrapped" [@@noalloc]
 let mi_poisson_rng_ : float -> int = fun lambda -> mi_poisson_rng lambda !global_rng
+external mi_uniform_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_uniform_lpdf_wrapped" "mi_uniform_lpdf_unwrapped" [@@noalloc]
+external mi_uniform_rng : (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> (float [@unboxed])
+  = "mi_uniform_rng_wrapped" "mi_uniform_rng_unwrapped" [@@noalloc]
+let mi_uniform_rng_ : float -> float -> float = fun alpha beta -> mi_uniform_rng alpha beta !global_rng

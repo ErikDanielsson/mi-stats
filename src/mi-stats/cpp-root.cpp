@@ -11,3 +11,4 @@
 #include "./cpp/mi_normal.hpp"
 #include "./cpp/mi_poisson.hpp"
 #include "./cpp/mi_rng.hpp"
+#include "./cpp/mi_uniform.hpp"

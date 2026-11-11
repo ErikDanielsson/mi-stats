@@ -12,3 +12,4 @@
 #include "./ocaml/mi_normal.cpp"
 #include "./ocaml/mi_poisson.cpp"
 #include "./ocaml/mi_rng.cpp"
+#include "./ocaml/mi_uniform.cpp"

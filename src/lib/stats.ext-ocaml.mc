@@ -173,6 +173,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalUniformLogPdf", [
+      { expr = "Mi_stats.mi_uniform_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalUniformSample", [
+      { expr = "Mi_stats.mi_uniform_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalMiStatsSetSeed", [
       { expr = "Mi_stats.mi_set_seed",
         ty = tyarrows_ [tyint_, otyunit_],
