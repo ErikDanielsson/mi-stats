@@ -187,6 +187,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalParetoType2LogPdf", [
+      { expr = "Mi_stats.mi_pareto_type_2_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalParetoType2Sample", [
+      { expr = "Mi_stats.mi_pareto_type_2_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalUniformLogPdf", [
       { expr = "Mi_stats.mi_uniform_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],

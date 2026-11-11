@@ -80,3 +80,9 @@ external mi_discrete_range_lpmf : int -> int -> int -> (float [@unboxed])
 external mi_discrete_range_rng : int -> int -> mi_rng -> int
   = "mi_discrete_range_rng_wrapped" "mi_discrete_range_rng_unwrapped" [@@noalloc]
 let mi_discrete_range_rng_ : int -> int -> int = fun lower upper -> mi_discrete_range_rng lower upper !global_rng
+
+external mi_pareto_type_2_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_pareto_type_2_lpdf_wrapped" "mi_pareto_type_2_lpdf_unwrapped" [@@noalloc]
+external mi_pareto_type_2_rng : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> (float [@unboxed])
+  = "mi_pareto_type_2_rng_wrapped" "mi_pareto_type_2_rng_unwrapped" [@@noalloc]
+let mi_pareto_type_2_rng_ : float -> float -> float -> float = fun mu lambda alpha -> mi_pareto_type_2_rng mu lambda alpha !global_rng

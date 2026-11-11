@@ -116,6 +116,17 @@ let normalLogPdf = lam mu:Float. lam sigma:Float. lam x:Float.
 let normalSample = lam mu:Float. lam sigma:Float.
   externalNormalSample mu sigma
 
+-- Pareto type 2 (Lomax when mu = 0), with location mu, scale lambda and
+-- shape alpha (as in Stan), density alpha / lambda * (1 + (x - mu) / lambda)^(-(alpha + 1))
+external externalParetoType2LogPdf : Float -> Float -> Float -> Float -> Float
+external externalParetoType2Sample ! : Float -> Float -> Float -> Float
+let paretoType2Pdf : Float -> Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha. lam x.
+  exp (externalParetoType2LogPdf x mu lambda alpha)
+let paretoType2LogPdf : Float -> Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha. lam x.
+  externalParetoType2LogPdf x mu lambda alpha
+let paretoType2Sample : Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha.
+  externalParetoType2Sample mu lambda alpha
+
 -- Poisson, with rate lambda (as in Stan, mean lambda)
 external externalPoissonLogPmf : Int -> Float -> Float
 external externalPoissonSample ! : Float -> Int
@@ -235,6 +246,14 @@ utest exp (normalLogPdf 2. 1. 2.) with 0.3989422804 using _eqf in
 utest exp (normalLogPdf 1. 2. 3.) with 0.12098536226 using _eqf in
 utest normalPdf 2. 3. 1. with 0.125794409231 using _eqf in
 utest normalSample 0. 0.2 with 0. using lam a. lam b. or (leqf a b) (geqf a b) in
+
+-- Testing Pareto type 2 (the values distinguish mu, lambda and alpha)
+utest paretoType2Pdf 1. 2. 3. 3. with 0.09375 using _eqf in
+utest paretoType2LogPdf 1. 2. 3. 3. with -2.367123614132 using _eqf in
+utest paretoType2Pdf 0. 2. 3. 1. with 0.296296296296 using _eqf in
+utest paretoType2Pdf 0. 0.5 2. 1. with 0.148148148148 using _eqf in
+utest paretoType2LogPdf -1. 1. 1. 0. with -1.386294361120 using _eqf in
+utest paretoType2Sample 1. 2. 3. with 1. using lam a. lam b. geqf a b in
 
 -- Testing Poisson (the values distinguish lambda from 1 / lambda)
 utest poissonPmf 3. 2 with 0.224041807655 using _eqf in
