@@ -10,4 +10,5 @@
 #include "./ocaml/mi_gamma.cpp"
 #include "./ocaml/mi_neg_binomial.cpp"
 #include "./ocaml/mi_normal.cpp"
+#include "./ocaml/mi_poisson.cpp"
 #include "./ocaml/mi_rng.cpp"

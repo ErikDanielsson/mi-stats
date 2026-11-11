@@ -63,3 +63,9 @@ external mi_neg_binomial_lpmf : int -> (float [@unboxed]) -> (float [@unboxed]) 
 external mi_neg_binomial_rng : (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> int
   = "mi_neg_binomial_rng_wrapped" "mi_neg_binomial_rng_unwrapped" [@@noalloc]
 let mi_neg_binomial_rng_ : float -> float -> int = fun alpha beta -> mi_neg_binomial_rng alpha beta !global_rng
+
+external mi_poisson_lpmf : int -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_poisson_lpmf_wrapped" "mi_poisson_lpmf_unwrapped" [@@noalloc]
+external mi_poisson_rng : (float [@unboxed]) -> mi_rng -> int
+  = "mi_poisson_rng_wrapped" "mi_poisson_rng_unwrapped" [@@noalloc]
+let mi_poisson_rng_ : float -> int = fun lambda -> mi_poisson_rng lambda !global_rng

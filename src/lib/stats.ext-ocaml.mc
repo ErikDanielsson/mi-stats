@@ -145,6 +145,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalPoissonLogPmf", [
+      { expr = "Mi_stats.mi_poisson_lpmf",
+        ty = tyarrows_ [tyint_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalPoissonSample", [
+      { expr = "Mi_stats.mi_poisson_rng_",
+        ty = tyarrows_ [tyfloat_, tyint_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalNormalLogPdf", [
       { expr = "Mi_stats.mi_normal_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],

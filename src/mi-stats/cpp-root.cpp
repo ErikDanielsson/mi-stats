@@ -9,4 +9,5 @@
 #include "./cpp/mi_gamma.hpp"
 #include "./cpp/mi_neg_binomial.hpp"
 #include "./cpp/mi_normal.hpp"
+#include "./cpp/mi_poisson.hpp"
 #include "./cpp/mi_rng.hpp"

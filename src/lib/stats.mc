@@ -106,6 +106,16 @@ let normalLogPdf = lam mu:Float. lam sigma:Float. lam x:Float.
 let normalSample = lam mu:Float. lam sigma:Float.
   externalNormalSample mu sigma
 
+-- Poisson, with rate lambda (as in Stan, mean lambda)
+external externalPoissonLogPmf : Int -> Float -> Float
+external externalPoissonSample ! : Float -> Int
+let poissonPmf : Float -> Int -> Float = lam lambda. lam x.
+  exp (externalPoissonLogPmf x lambda)
+let poissonLogPmf : Float -> Int -> Float = lam lambda. lam x.
+  externalPoissonLogPmf x lambda
+let poissonSample : Float -> Int = lam lambda.
+  externalPoissonSample lambda
+
 -- Seed
 external externalMiStatsSetSeed ! : Int -> ()
 -- Sets the seed used by the sampling functions in this file. Note
@@ -197,6 +207,17 @@ utest exp (normalLogPdf 2. 1. 2.) with 0.3989422804 using _eqf in
 utest exp (normalLogPdf 1. 2. 3.) with 0.12098536226 using _eqf in
 utest normalPdf 2. 3. 1. with 0.125794409231 using _eqf in
 utest normalSample 0. 0.2 with 0. using lam a. lam b. or (leqf a b) (geqf a b) in
+
+-- Testing Poisson (the values distinguish lambda from 1 / lambda)
+utest poissonPmf 3. 2 with 0.224041807655 using _eqf in
+utest poissonPmf 0.5 3 with 0.012636055411 using _eqf in
+utest poissonPmf 0.5 5 with 0.000157950693 using _eqf in
+utest poissonPmf 2. 0 with 0.135335283237 using _eqf in
+utest poissonPmf 0.5 2 with 0.075816332464 using _eqf in
+utest poissonPmf 2.5 4 with 0.133601885781 using _eqf in
+utest poissonPmf 0.4 4 with 0.000715008049 using _eqf in
+utest poissonLogPmf 4. 10 with -5.241468961877 using _eqf in
+utest poissonSample 2. with 0 using lam a. lam b. geqi a 0 in
 
 -- Testing seed
 utest miStatsSetSeed 0; normalSample 0. 1.; normalSample 0. 1.
