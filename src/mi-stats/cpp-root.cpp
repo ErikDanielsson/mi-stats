@@ -2,6 +2,7 @@
 
 #include "./cpp/mi_bernoulli.hpp"
 #include "./cpp/mi_beta.hpp"
+#include "./cpp/mi_binomial.hpp"
 #include "./cpp/mi_gamma.hpp"
 #include "./cpp/mi_normal.hpp"
 #include "./cpp/mi_rng.hpp"

@@ -31,3 +31,9 @@ external mi_bernoulli_lpmf : bool -> (float [@unboxed]) -> (float [@unboxed])
 external mi_bernoulli_rng : (float [@unboxed]) -> mi_rng -> bool
   = "mi_bernoulli_rng_wrapped" "mi_bernoulli_rng_unwrapped" [@@noalloc]
 let mi_bernoulli_rng_ : float -> bool = fun p -> mi_bernoulli_rng p !global_rng
+
+external mi_binomial_lpmf : int -> int -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_binomial_lpmf_wrapped" "mi_binomial_lpmf_unwrapped" [@@noalloc]
+external mi_binomial_rng : int -> (float [@unboxed]) -> mi_rng -> int
+  = "mi_binomial_rng_wrapped" "mi_binomial_rng_unwrapped" [@@noalloc]
+let mi_binomial_rng_ : int -> float -> int = fun n p -> mi_binomial_rng n p !global_rng

@@ -2,6 +2,7 @@
 
 #include "./ocaml/mi_bernoulli.cpp"
 #include "./ocaml/mi_beta.cpp"
+#include "./ocaml/mi_binomial.cpp"
 #include "./ocaml/mi_error.cpp"
 #include "./ocaml/mi_gamma.cpp"
 #include "./ocaml/mi_normal.cpp"

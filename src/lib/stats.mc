@@ -20,6 +20,16 @@ let bernoulliLogPmf = lam p:Float. lam x:Bool.
 let bernoulliSample = lam p:Float.
   externalBernoulliSample p
 
+-- Binomial, with N trials and success probability theta (as in Stan)
+external externalBinomialLogPmf : Int -> Int -> Float -> Float
+external externalBinomialSample ! : Int -> Float -> Int
+let binomialPmf = lam n:Int. lam theta:Float. lam x:Int.
+  exp (externalBinomialLogPmf x n theta)
+let binomialLogPmf = lam n:Int. lam theta:Float. lam x:Int.
+  externalBinomialLogPmf x n theta
+let binomialSample = lam n:Int. lam theta:Float.
+  externalBinomialSample n theta
+
 -- Beta, with shape parameters alpha and beta (as in Stan)
 external externalBetaLogPdf : Float -> Float -> Float -> Float
 external externalBetaSample ! : Float -> Float -> Float
@@ -82,6 +92,13 @@ utest bernoulliLogPmf 1. false with negf inf using eqf in
 utest bernoulliSample 0. with false in
 utest bernoulliSample 1. with true in
 utest bernoulliSample 0.6 with false using lam. lam. true in
+
+-- Testing Binomial (the values distinguish N and theta, and theta from 1 - theta)
+utest binomialPmf 10 0.3 4 with 0.200120949 using _eqf in
+utest binomialPmf 10 0.7 4 with 0.036756909 using _eqf in
+utest binomialPmf 5 0.5 2 with 0.3125 using _eqf in
+utest exp (binomialLogPmf 20 0.5 10) with 0.176197052001953 using _eqf in
+utest binomialPmf 1 0.3 1 with 0.3 using _eqf in
 
 -- Testing Beta (the values distinguish alpha and beta)
 utest betaPdf 2. 3. 0.2 with 1.536 using _eqf in
