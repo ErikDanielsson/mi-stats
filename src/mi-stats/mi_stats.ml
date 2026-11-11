@@ -74,3 +74,9 @@ external mi_uniform_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@
 external mi_uniform_rng : (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> (float [@unboxed])
   = "mi_uniform_rng_wrapped" "mi_uniform_rng_unwrapped" [@@noalloc]
 let mi_uniform_rng_ : float -> float -> float = fun alpha beta -> mi_uniform_rng alpha beta !global_rng
+
+external mi_discrete_range_lpmf : int -> int -> int -> (float [@unboxed])
+  = "mi_discrete_range_lpmf_wrapped" "mi_discrete_range_lpmf_unwrapped" [@@noalloc]
+external mi_discrete_range_rng : int -> int -> mi_rng -> int
+  = "mi_discrete_range_rng_wrapped" "mi_discrete_range_rng_unwrapped" [@@noalloc]
+let mi_discrete_range_rng_ : int -> int -> int = fun lower upper -> mi_discrete_range_rng lower upper !global_rng

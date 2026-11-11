@@ -96,6 +96,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalDiscreteRangeLogPmf", [
+      { expr = "Mi_stats.mi_discrete_range_lpmf",
+        ty = tyarrows_ [tyint_, tyint_, tyint_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalDiscreteRangeSample", [
+      { expr = "Mi_stats.mi_discrete_range_rng_",
+        ty = tyarrows_ [tyint_, tyint_, tyint_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalExponentialLogPdf", [
       { expr = "Mi_stats.mi_exponential_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],

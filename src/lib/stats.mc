@@ -63,6 +63,16 @@ let chiSquareCdf : Float -> Float -> Float = lam nu. lam x.
 let chiSquareSample : Float -> Float = lam nu.
   externalChiSquareSample nu
 
+-- Discrete range, uniform over the integers lower, ..., upper (inclusive, as in Stan)
+external externalDiscreteRangeLogPmf : Int -> Int -> Int -> Float
+external externalDiscreteRangeSample ! : Int -> Int -> Int
+let discreteRangePmf : Int -> Int -> Int -> Float = lam lower. lam upper. lam x.
+  exp (externalDiscreteRangeLogPmf x lower upper)
+let discreteRangeLogPmf : Int -> Int -> Int -> Float = lam lower. lam upper. lam x.
+  externalDiscreteRangeLogPmf x lower upper
+let discreteRangeSample : Int -> Int -> Int = lam lower. lam upper.
+  externalDiscreteRangeSample lower upper
+
 -- Exponential, with rate beta (as in Stan, mean 1 / beta)
 external externalExponentialLogPdf : Float -> Float -> Float
 external externalExponentialSample ! : Float -> Float
@@ -186,6 +196,14 @@ utest exp (chiSquareLogPdf 4. 2.) with 0.183939720586 using _eqf in
 utest chiSquareCdf 2. 1. with 0.393469340287 using _eqf in
 utest chiSquareCdf 4. 2. with 0.264241117657 using _eqf in
 utest chiSquareSample 2. with 0. using lam a. lam b. geqf a 0. in
+
+-- Testing Discrete range (the values distinguish lower and upper, with both bounds inclusive)
+utest discreteRangePmf 3 7 7 with 0.2 using _eqf in
+utest discreteRangePmf 3 7 3 with 0.2 using _eqf in
+utest exp (discreteRangeLogPmf 1 6 4) with 0.166666666667 using _eqf in
+utest discreteRangeLogPmf 2 10 2 with -2.197224577336 using _eqf in
+utest discreteRangePmf 0 2 1 with 0.333333333333 using _eqf in
+utest discreteRangeSample 1 6 with 0 using lam a. lam b. and (geqi a 1) (leqi a 6) in
 
 -- Testing Exponential (the values distinguish beta from 1 / beta)
 utest exponentialPdf 2. 1. with 0.270670566473 using _eqf in
