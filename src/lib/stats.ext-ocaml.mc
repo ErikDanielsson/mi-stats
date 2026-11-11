@@ -33,6 +33,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalBetaLogPdf", [
+      { expr = "Mi_stats.mi_beta_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalBetaSample", [
+      { expr = "Mi_stats.mi_beta_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalGammaLogPdf", [
       { expr = "Mi_stats.mi_gamma_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],

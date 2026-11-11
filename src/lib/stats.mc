@@ -20,6 +20,16 @@ let bernoulliLogPmf = lam p:Float. lam x:Bool.
 let bernoulliSample = lam p:Float.
   externalBernoulliSample p
 
+-- Beta, with shape parameters alpha and beta (as in Stan)
+external externalBetaLogPdf : Float -> Float -> Float -> Float
+external externalBetaSample ! : Float -> Float -> Float
+let betaPdf = lam alpha:Float. lam beta:Float. lam x:Float.
+  exp (externalBetaLogPdf x alpha beta)
+let betaLogPdf = lam alpha:Float. lam beta:Float. lam x:Float.
+  externalBetaLogPdf x alpha beta
+let betaSample = lam alpha:Float. lam beta:Float.
+  externalBetaSample alpha beta
+
 -- Gamma, with shape alpha and rate beta (as in Stan)
 external externalGammaLogPdf : Float -> Float -> Float -> Float
 external externalGammaCdf : Float -> Float -> Float -> Float
@@ -72,6 +82,13 @@ utest bernoulliLogPmf 1. false with negf inf using eqf in
 utest bernoulliSample 0. with false in
 utest bernoulliSample 1. with true in
 utest bernoulliSample 0.6 with false using lam. lam. true in
+
+-- Testing Beta (the values distinguish alpha and beta)
+utest betaPdf 2. 3. 0.2 with 1.536 using _eqf in
+utest betaPdf 2. 3. 0.8 with 0.384 using _eqf in
+utest exp (betaLogPdf 3. 5. 0.4) with 2.17728 using _eqf in
+utest betaPdf 0.5 0.5 0.5 with 0.636619772368 using _eqf in
+utest betaSample 2. 2. with 0. using lam a. lam b. and (geqf a 0.) (leqf a 1.) in
 
 -- Testing Gamma (the values distinguish shape and rate from shape and scale)
 utest gammaPdf 2. 3. 1. with 0.448083615311 using _eqf in
