@@ -40,6 +40,16 @@ let betaLogPdf = lam alpha:Float. lam beta:Float. lam x:Float.
 let betaSample = lam alpha:Float. lam beta:Float.
   externalBetaSample alpha beta
 
+-- Beta-binomial, with N trials and shape parameters alpha and beta (as in Stan)
+external externalBetaBinomialLogPmf : Int -> Int -> Float -> Float -> Float
+external externalBetaBinomialSample ! : Int -> Float -> Float -> Int
+let betaBinomialPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alpha. lam beta. lam x.
+  exp (externalBetaBinomialLogPmf x n alpha beta)
+let betaBinomialLogPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alpha. lam beta. lam x.
+  externalBetaBinomialLogPmf x n alpha beta
+let betaBinomialSample : Int -> Float -> Float -> Int = lam n. lam alpha. lam beta.
+  externalBetaBinomialSample n alpha beta
+
 -- Gamma, with shape alpha and rate beta (as in Stan)
 external externalGammaLogPdf : Float -> Float -> Float -> Float
 external externalGammaCdf : Float -> Float -> Float -> Float
@@ -106,6 +116,14 @@ utest betaPdf 2. 3. 0.8 with 0.384 using _eqf in
 utest exp (betaLogPdf 3. 5. 0.4) with 2.17728 using _eqf in
 utest betaPdf 0.5 0.5 0.5 with 0.636619772368 using _eqf in
 utest betaSample 2. 2. with 0. using lam a. lam b. and (geqf a 0.) (leqf a 1.) in
+
+-- Testing Beta-binomial (the values distinguish N, alpha and beta)
+utest betaBinomialPmf 5 2. 3. 1 with 0.238095238095 using _eqf in
+utest betaBinomialPmf 5 3. 2. 1 with 0.119047619048 using _eqf in
+utest exp (betaBinomialLogPmf 4 2. 1. 0) with 0.066666666667 using _eqf in
+utest betaBinomialPmf 4 1. 2. 0 with 0.333333333333 using _eqf in
+utest exp (betaBinomialLogPmf 5 1. 1. 2) with 0.166666666667 using _eqf in
+utest betaBinomialSample 3 2. 3. with 0 using lam a. lam b. and (geqi a 0) (leqi a 3) in
 
 -- Testing Gamma (the values distinguish shape and rate from shape and scale)
 utest gammaPdf 2. 3. 1. with 0.448083615311 using _eqf in

@@ -61,6 +61,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalBetaBinomialLogPmf", [
+      { expr = "Mi_stats.mi_beta_binomial_lpmf",
+        ty = tyarrows_ [tyint_, tyint_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalBetaBinomialSample", [
+      { expr = "Mi_stats.mi_beta_binomial_rng_",
+        ty = tyarrows_ [tyint_, tyfloat_, tyfloat_, tyint_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalGammaLogPdf", [
       { expr = "Mi_stats.mi_gamma_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
