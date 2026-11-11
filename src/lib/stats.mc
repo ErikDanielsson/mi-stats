@@ -86,6 +86,16 @@ let gammaCdf = lam alpha:Float. lam beta:Float. lam x:Float.
 let gammaSample = lam alpha:Float. lam beta:Float.
   externalGammaSample alpha beta
 
+-- Negative binomial, with shape alpha and inverse scale beta (as in Stan, mean alpha / beta)
+external externalNegBinomialLogPmf : Int -> Float -> Float -> Float
+external externalNegBinomialSample ! : Float -> Float -> Int
+let negBinomialPmf : Float -> Float -> Int -> Float = lam alpha. lam beta. lam x.
+  exp (externalNegBinomialLogPmf x alpha beta)
+let negBinomialLogPmf : Float -> Float -> Int -> Float = lam alpha. lam beta. lam x.
+  externalNegBinomialLogPmf x alpha beta
+let negBinomialSample : Float -> Float -> Int = lam alpha. lam beta.
+  externalNegBinomialSample alpha beta
+
 -- Normal
 external externalNormalLogPdf : Float -> Float -> Float -> Float
 external externalNormalSample ! : Float -> Float -> Float
@@ -171,6 +181,15 @@ utest gammaLogPdf 3. 2. 0.5 with -1. using _eqf in
 utest gammaCdf 2. 3. 1. with 0.800851726529 using _eqf in
 utest gammaCdf 1. 2. 0.5 with 0.632120558829 using _eqf in
 utest gammaSample 1. 1000000. with 0. using lam a. lam b. and (geqf a 0.) (ltf a 0.01) in
+
+-- Testing Negative binomial (the values distinguish alpha and beta, and beta from 1 / beta)
+utest negBinomialPmf 2. 3. 1 with 0.281250000000 using _eqf in
+utest negBinomialPmf 3. 2. 1 with 0.296296296296 using _eqf in
+utest negBinomialPmf 2. (divf 1. 3.) 1 with 0.09375 using _eqf in
+utest negBinomialPmf 0.5 3. 1 with 0.108253175473 using _eqf in
+utest negBinomialPmf 3. 3. 2 with 0.158203125 using _eqf in
+utest negBinomialLogPmf 2. 3. 0 with -0.575364144904 using _eqf in
+utest negBinomialSample 2. 3. with 0 using lam a. lam b. geqi a 0 in
 
 -- Testing Normal (the values distinguish mu and sigma, and sigma from the variance)
 utest normalPdf 0. 0.4472 0. with 0.8920891779996 using _eqf in

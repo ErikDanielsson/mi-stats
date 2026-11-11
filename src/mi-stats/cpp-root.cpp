@@ -7,5 +7,6 @@
 #include "./cpp/mi_chi_square.hpp"
 #include "./cpp/mi_exponential.hpp"
 #include "./cpp/mi_gamma.hpp"
+#include "./cpp/mi_neg_binomial.hpp"
 #include "./cpp/mi_normal.hpp"
 #include "./cpp/mi_rng.hpp"

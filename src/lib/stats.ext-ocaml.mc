@@ -131,6 +131,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalNegBinomialLogPmf", [
+      { expr = "Mi_stats.mi_neg_binomial_lpmf",
+        ty = tyarrows_ [tyint_, tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalNegBinomialSample", [
+      { expr = "Mi_stats.mi_neg_binomial_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyint_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalNormalLogPdf", [
       { expr = "Mi_stats.mi_normal_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
