@@ -43,3 +43,11 @@ external mi_beta_binomial_lpmf : int -> int -> (float [@unboxed]) -> (float [@un
 external mi_beta_binomial_rng : int -> (float [@unboxed]) -> (float [@unboxed]) -> mi_rng -> int
   = "mi_beta_binomial_rng_wrapped" "mi_beta_binomial_rng_unwrapped" [@@noalloc]
 let mi_beta_binomial_rng_ : int -> float -> float -> int = fun n a b -> mi_beta_binomial_rng n a b !global_rng
+
+external mi_chi_square_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_chi_square_lpdf_wrapped" "mi_chi_square_lpdf_unwrapped" [@@noalloc]
+external mi_chi_square_cdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_chi_square_cdf_wrapped" "mi_chi_square_cdf_unwrapped" [@@noalloc]
+external mi_chi_square_rng : (float [@unboxed]) -> mi_rng -> (float [@unboxed])
+  = "mi_chi_square_rng_wrapped" "mi_chi_square_rng_unwrapped" [@@noalloc]
+let mi_chi_square_rng_ : float -> float = fun nu -> mi_chi_square_rng nu !global_rng

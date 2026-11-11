@@ -50,6 +50,19 @@ let betaBinomialLogPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alph
 let betaBinomialSample : Int -> Float -> Float -> Int = lam n. lam alpha. lam beta.
   externalBetaBinomialSample n alpha beta
 
+-- Chi-square, with degrees of freedom nu (as in Stan)
+external externalChiSquareLogPdf : Float -> Float -> Float
+external externalChiSquareCdf : Float -> Float -> Float
+external externalChiSquareSample ! : Float -> Float
+let chiSquarePdf : Float -> Float -> Float = lam nu. lam x.
+  exp (externalChiSquareLogPdf x nu)
+let chiSquareLogPdf : Float -> Float -> Float = lam nu. lam x.
+  externalChiSquareLogPdf x nu
+let chiSquareCdf : Float -> Float -> Float = lam nu. lam x.
+  externalChiSquareCdf x nu
+let chiSquareSample : Float -> Float = lam nu.
+  externalChiSquareSample nu
+
 -- Gamma, with shape alpha and rate beta (as in Stan)
 external externalGammaLogPdf : Float -> Float -> Float -> Float
 external externalGammaCdf : Float -> Float -> Float -> Float
@@ -124,6 +137,15 @@ utest exp (betaBinomialLogPmf 4 2. 1. 0) with 0.066666666667 using _eqf in
 utest betaBinomialPmf 4 1. 2. 0 with 0.333333333333 using _eqf in
 utest exp (betaBinomialLogPmf 5 1. 1. 2) with 0.166666666667 using _eqf in
 utest betaBinomialSample 3 2. 3. with 0 using lam a. lam b. and (geqi a 0) (leqi a 3) in
+
+-- Testing Chi-square (the values distinguish nu from other degrees of freedom)
+utest chiSquarePdf 2. 1. with 0.303265329856 using _eqf in
+utest chiSquarePdf 4. 1. with 0.151632664928 using _eqf in
+utest chiSquarePdf 6. 2. with 0.091969860293 using _eqf in
+utest exp (chiSquareLogPdf 4. 2.) with 0.183939720586 using _eqf in
+utest chiSquareCdf 2. 1. with 0.393469340287 using _eqf in
+utest chiSquareCdf 4. 2. with 0.264241117657 using _eqf in
+utest chiSquareSample 2. with 0. using lam a. lam b. geqf a 0. in
 
 -- Testing Gamma (the values distinguish shape and rate from shape and scale)
 utest gammaPdf 2. 3. 1. with 0.448083615311 using _eqf in

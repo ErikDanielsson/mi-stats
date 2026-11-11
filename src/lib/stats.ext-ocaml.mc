@@ -75,6 +75,27 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalChiSquareLogPdf", [
+      { expr = "Mi_stats.mi_chi_square_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalChiSquareCdf", [
+      { expr = "Mi_stats.mi_chi_square_cdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalChiSquareSample", [
+      { expr = "Mi_stats.mi_chi_square_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalGammaLogPdf", [
       { expr = "Mi_stats.mi_gamma_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],
