@@ -6,6 +6,7 @@
 #include "./ocaml/mi_binomial.cpp"
 #include "./ocaml/mi_chi_square.cpp"
 #include "./ocaml/mi_error.cpp"
+#include "./ocaml/mi_exponential.cpp"
 #include "./ocaml/mi_gamma.cpp"
 #include "./ocaml/mi_normal.cpp"
 #include "./ocaml/mi_rng.cpp"

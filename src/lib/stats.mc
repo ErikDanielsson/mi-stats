@@ -63,6 +63,16 @@ let chiSquareCdf : Float -> Float -> Float = lam nu. lam x.
 let chiSquareSample : Float -> Float = lam nu.
   externalChiSquareSample nu
 
+-- Exponential, with rate beta (as in Stan, mean 1 / beta)
+external externalExponentialLogPdf : Float -> Float -> Float
+external externalExponentialSample ! : Float -> Float
+let exponentialPdf : Float -> Float -> Float = lam beta. lam x.
+  exp (externalExponentialLogPdf x beta)
+let exponentialLogPdf : Float -> Float -> Float = lam beta. lam x.
+  externalExponentialLogPdf x beta
+let exponentialSample : Float -> Float = lam beta.
+  externalExponentialSample beta
+
 -- Gamma, with shape alpha and rate beta (as in Stan)
 external externalGammaLogPdf : Float -> Float -> Float -> Float
 external externalGammaCdf : Float -> Float -> Float -> Float
@@ -146,6 +156,14 @@ utest exp (chiSquareLogPdf 4. 2.) with 0.183939720586 using _eqf in
 utest chiSquareCdf 2. 1. with 0.393469340287 using _eqf in
 utest chiSquareCdf 4. 2. with 0.264241117657 using _eqf in
 utest chiSquareSample 2. with 0. using lam a. lam b. geqf a 0. in
+
+-- Testing Exponential (the values distinguish beta from 1 / beta)
+utest exponentialPdf 2. 1. with 0.270670566473 using _eqf in
+utest exponentialPdf 0.5 1. with 0.303265329856 using _eqf in
+utest exponentialPdf 1. 2. with 0.135335283237 using _eqf in
+utest exponentialLogPdf 3. 0. with 1.098612288668 using _eqf in
+utest exponentialPdf 4. 0.25 with 1.471517764686 using _eqf in
+utest exponentialSample 1. with 0. using lam a. lam b. geqf a 0. in
 
 -- Testing Gamma (the values distinguish shape and rate from shape and scale)
 utest gammaPdf 2. 3. 1. with 0.448083615311 using _eqf in

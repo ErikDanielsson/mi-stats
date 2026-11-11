@@ -96,6 +96,20 @@ let miStatsExtMap =
         cLibraries = []
       }
     ]),
+    ("externalExponentialLogPdf", [
+      { expr = "Mi_stats.mi_exponential_lpdf",
+        ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
+    ("externalExponentialSample", [
+      { expr = "Mi_stats.mi_exponential_rng_",
+        ty = tyarrows_ [tyfloat_, tyfloat_],
+        libraries = ["mi_stats"],
+        cLibraries = []
+      }
+    ]),
     ("externalGammaLogPdf", [
       { expr = "Mi_stats.mi_gamma_lpdf",
         ty = tyarrows_ [tyfloat_, tyfloat_, tyfloat_, tyfloat_],

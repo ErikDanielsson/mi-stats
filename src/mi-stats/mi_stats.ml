@@ -51,3 +51,9 @@ external mi_chi_square_cdf : (float [@unboxed]) -> (float [@unboxed]) -> (float 
 external mi_chi_square_rng : (float [@unboxed]) -> mi_rng -> (float [@unboxed])
   = "mi_chi_square_rng_wrapped" "mi_chi_square_rng_unwrapped" [@@noalloc]
 let mi_chi_square_rng_ : float -> float = fun nu -> mi_chi_square_rng nu !global_rng
+
+external mi_exponential_lpdf : (float [@unboxed]) -> (float [@unboxed]) -> (float [@unboxed])
+  = "mi_exponential_lpdf_wrapped" "mi_exponential_lpdf_unwrapped" [@@noalloc]
+external mi_exponential_rng : (float [@unboxed]) -> mi_rng -> (float [@unboxed])
+  = "mi_exponential_rng_wrapped" "mi_exponential_rng_unwrapped" [@@noalloc]
+let mi_exponential_rng_ : float -> float = fun beta -> mi_exponential_rng beta !global_rng
