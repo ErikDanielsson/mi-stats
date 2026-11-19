@@ -159,6 +159,29 @@ let uniformLogPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam 
 let uniformSample : Float -> Float -> Float = lam alpha. lam beta.
   externalUniformSample alpha beta
 
+-- Geometric, the number of failures before the first success with success
+-- probability p
+let geometricSample : Float -> Int = lam p.
+  negBinomialSample 1. (divf p (subf 1. p))
+let geometricLogPmf : Float -> Int -> Float = lam p. lam x.
+  addf (mulf (int2float x) (log (subf 1. p))) (log p)
+let geometricPmf : Float -> Int -> Float = lam p. lam x.
+  exp (geometricLogPmf p x)
+
+-- Reciprocal (log-uniform) on [a, b]
+let reciprocalSample : Float -> Float -> Float = lam a. lam b.
+  exp (uniformSample (log a) (log b))
+let reciprocalPdf : Float -> Float -> Float -> Float = lam a. lam b. lam x.
+  if geqf x a then
+    if leqf x b then divf 1.0 (mulf (log (divf b a)) x)
+    else 0.
+  else 0.
+let reciprocalLogPdf : Float -> Float -> Float -> Float = lam a. lam b. lam x.
+  if geqf x a then
+    if leqf x b then negf (log (mulf (log (divf b a)) x))
+    else negf inf
+  else negf inf
+
 -- Seed
 external externalMiStatsSetSeed ! : Int -> ()
 -- Sets the seed used by the sampling functions in this file. Note
@@ -284,6 +307,20 @@ utest uniformPdf 0.5 4. 1. with 0.285714285714 using _eqf in
 utest uniformLogPdf 0. 4. 1. with -1.386294361120 using _eqf in
 utest uniformLogPdf 2. 5. 1. with negf inf using eqf in
 utest uniformSample 2. 5. with 0. using lam a. lam b. and (geqf a 2.) (leqf a 5.) in
+
+-- Testing Geometric
+utest geometricPmf 0.3 0 with 0.3 using _eqf in
+utest exp (geometricLogPmf 0.3 1) with 0.21 using _eqf in
+utest geometricPmf 0.3 2 with 0.147 using _eqf in
+utest exp (geometricLogPmf 0.3 3) with 0.1029 using _eqf in
+utest geometricSample 0.3 with 0 using geqi in
+
+-- Testing Reciprocal
+utest reciprocalLogPdf 1. 2. 1.5 with -0.038952187526 using _eqf in
+utest reciprocalLogPdf 1. 2. 2.5 with negf inf using leqf in
+utest exp (reciprocalLogPdf 4. 6. 5.) with 0.493260692475 using _eqf in
+utest reciprocalPdf 4. 6. 5. with 0.493260692475 using _eqf in
+utest reciprocalSample 0.5 0.7 with 0.5 using lam a. lam. and (geqf a 0.5) (leqf a 0.7) in
 
 -- Testing seed
 utest miStatsSetSeed 0; normalSample 0. 1.; normalSample 0. 1.
