@@ -23,30 +23,33 @@ let bernoulliSample = lam p:Float.
 -- Binomial, with N trials and success probability theta (as in Stan)
 external externalBinomialLogPmf : Int -> Int -> Float -> Float
 external externalBinomialSample ! : Int -> Float -> Int
-let binomialPmf = lam n:Int. lam theta:Float. lam x:Int.
-  exp (externalBinomialLogPmf x n theta)
-let binomialLogPmf = lam n:Int. lam theta:Float. lam x:Int.
-  externalBinomialLogPmf x n theta
+let binomialLogPmf : Int -> Float -> Int -> Float = lam n. lam theta. lam x.
+  if and (geqi n 0) (or (lti x 0) (gti x n)) then negf inf
+  else externalBinomialLogPmf x n theta
+let binomialPmf : Int -> Float -> Int -> Float = lam n. lam theta. lam x.
+  exp (binomialLogPmf n theta x)
 let binomialSample = lam n:Int. lam theta:Float.
   externalBinomialSample n theta
 
 -- Beta, with shape parameters alpha and beta (as in Stan)
 external externalBetaLogPdf : Float -> Float -> Float -> Float
 external externalBetaSample ! : Float -> Float -> Float
-let betaPdf = lam alpha:Float. lam beta:Float. lam x:Float.
-  exp (externalBetaLogPdf x alpha beta)
-let betaLogPdf = lam alpha:Float. lam beta:Float. lam x:Float.
-  externalBetaLogPdf x alpha beta
+let betaLogPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  if or (ltf x 0.) (gtf x 1.) then negf inf
+  else externalBetaLogPdf x alpha beta
+let betaPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  exp (betaLogPdf alpha beta x)
 let betaSample = lam alpha:Float. lam beta:Float.
   externalBetaSample alpha beta
 
 -- Beta-binomial, with N trials and shape parameters alpha and beta (as in Stan)
 external externalBetaBinomialLogPmf : Int -> Int -> Float -> Float -> Float
 external externalBetaBinomialSample ! : Int -> Float -> Float -> Int
-let betaBinomialPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alpha. lam beta. lam x.
-  exp (externalBetaBinomialLogPmf x n alpha beta)
 let betaBinomialLogPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alpha. lam beta. lam x.
-  externalBetaBinomialLogPmf x n alpha beta
+  if and (geqi n 0) (or (lti x 0) (gti x n)) then negf inf
+  else externalBetaBinomialLogPmf x n alpha beta
+let betaBinomialPmf : Int -> Float -> Float -> Int -> Float = lam n. lam alpha. lam beta. lam x.
+  exp (betaBinomialLogPmf n alpha beta x)
 let betaBinomialSample : Int -> Float -> Float -> Int = lam n. lam alpha. lam beta.
   externalBetaBinomialSample n alpha beta
 
@@ -54,32 +57,36 @@ let betaBinomialSample : Int -> Float -> Float -> Int = lam n. lam alpha. lam be
 external externalChiSquareLogPdf : Float -> Float -> Float
 external externalChiSquareCdf : Float -> Float -> Float
 external externalChiSquareSample ! : Float -> Float
-let chiSquarePdf : Float -> Float -> Float = lam nu. lam x.
-  exp (externalChiSquareLogPdf x nu)
 let chiSquareLogPdf : Float -> Float -> Float = lam nu. lam x.
-  externalChiSquareLogPdf x nu
+  if ltf x 0. then negf inf
+  else externalChiSquareLogPdf x nu
+let chiSquarePdf : Float -> Float -> Float = lam nu. lam x.
+  exp (chiSquareLogPdf nu x)
 let chiSquareCdf : Float -> Float -> Float = lam nu. lam x.
-  externalChiSquareCdf x nu
+  if ltf x 0. then 0.
+  else externalChiSquareCdf x nu
 let chiSquareSample : Float -> Float = lam nu.
   externalChiSquareSample nu
 
 -- Discrete range, uniform over the integers lower, ..., upper (inclusive, as in Stan)
 external externalDiscreteRangeLogPmf : Int -> Int -> Int -> Float
 external externalDiscreteRangeSample ! : Int -> Int -> Int
-let discreteRangePmf : Int -> Int -> Int -> Float = lam lower. lam upper. lam x.
-  exp (externalDiscreteRangeLogPmf x lower upper)
 let discreteRangeLogPmf : Int -> Int -> Int -> Float = lam lower. lam upper. lam x.
-  externalDiscreteRangeLogPmf x lower upper
+  if and (leqi lower upper) (or (lti x lower) (gti x upper)) then negf inf
+  else externalDiscreteRangeLogPmf x lower upper
+let discreteRangePmf : Int -> Int -> Int -> Float = lam lower. lam upper. lam x.
+  exp (discreteRangeLogPmf lower upper x)
 let discreteRangeSample : Int -> Int -> Int = lam lower. lam upper.
   externalDiscreteRangeSample lower upper
 
 -- Exponential, with rate beta (as in Stan, mean 1 / beta)
 external externalExponentialLogPdf : Float -> Float -> Float
 external externalExponentialSample ! : Float -> Float
-let exponentialPdf : Float -> Float -> Float = lam beta. lam x.
-  exp (externalExponentialLogPdf x beta)
 let exponentialLogPdf : Float -> Float -> Float = lam beta. lam x.
-  externalExponentialLogPdf x beta
+  if ltf x 0. then negf inf
+  else externalExponentialLogPdf x beta
+let exponentialPdf : Float -> Float -> Float = lam beta. lam x.
+  exp (exponentialLogPdf beta x)
 let exponentialSample : Float -> Float = lam beta.
   externalExponentialSample beta
 
@@ -87,22 +94,25 @@ let exponentialSample : Float -> Float = lam beta.
 external externalGammaLogPdf : Float -> Float -> Float -> Float
 external externalGammaCdf : Float -> Float -> Float -> Float
 external externalGammaSample ! : Float -> Float -> Float
-let gammaPdf = lam alpha:Float. lam beta:Float. lam x:Float.
-  exp (externalGammaLogPdf x alpha beta)
-let gammaLogPdf = lam alpha:Float. lam beta:Float. lam x:Float.
-  externalGammaLogPdf x alpha beta
-let gammaCdf = lam alpha:Float. lam beta:Float. lam x:Float.
-  externalGammaCdf x alpha beta
+let gammaLogPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  if or (leqf x 0.) (eqf x inf) then negf inf
+  else externalGammaLogPdf x alpha beta
+let gammaPdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  exp (gammaLogPdf alpha beta x)
+let gammaCdf : Float -> Float -> Float -> Float = lam alpha. lam beta. lam x.
+  if ltf x 0. then 0.
+  else externalGammaCdf x alpha beta
 let gammaSample = lam alpha:Float. lam beta:Float.
   externalGammaSample alpha beta
 
 -- Negative binomial, with shape alpha and inverse scale beta (as in Stan, mean alpha / beta)
 external externalNegBinomialLogPmf : Int -> Float -> Float -> Float
 external externalNegBinomialSample ! : Float -> Float -> Int
-let negBinomialPmf : Float -> Float -> Int -> Float = lam alpha. lam beta. lam x.
-  exp (externalNegBinomialLogPmf x alpha beta)
 let negBinomialLogPmf : Float -> Float -> Int -> Float = lam alpha. lam beta. lam x.
-  externalNegBinomialLogPmf x alpha beta
+  if lti x 0 then negf inf
+  else externalNegBinomialLogPmf x alpha beta
+let negBinomialPmf : Float -> Float -> Int -> Float = lam alpha. lam beta. lam x.
+  exp (negBinomialLogPmf alpha beta x)
 let negBinomialSample : Float -> Float -> Int = lam alpha. lam beta.
   externalNegBinomialSample alpha beta
 
@@ -120,20 +130,22 @@ let normalSample = lam mu:Float. lam sigma:Float.
 -- shape alpha (as in Stan), density alpha / lambda * (1 + (x - mu) / lambda)^(-(alpha + 1))
 external externalParetoType2LogPdf : Float -> Float -> Float -> Float -> Float
 external externalParetoType2Sample ! : Float -> Float -> Float -> Float
-let paretoType2Pdf : Float -> Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha. lam x.
-  exp (externalParetoType2LogPdf x mu lambda alpha)
 let paretoType2LogPdf : Float -> Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha. lam x.
-  externalParetoType2LogPdf x mu lambda alpha
+  if ltf x mu then negf inf
+  else externalParetoType2LogPdf x mu lambda alpha
+let paretoType2Pdf : Float -> Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha. lam x.
+  exp (paretoType2LogPdf mu lambda alpha x)
 let paretoType2Sample : Float -> Float -> Float -> Float = lam mu. lam lambda. lam alpha.
   externalParetoType2Sample mu lambda alpha
 
 -- Poisson, with rate lambda (as in Stan, mean lambda)
 external externalPoissonLogPmf : Int -> Float -> Float
 external externalPoissonSample ! : Float -> Int
-let poissonPmf : Float -> Int -> Float = lam lambda. lam x.
-  exp (externalPoissonLogPmf x lambda)
 let poissonLogPmf : Float -> Int -> Float = lam lambda. lam x.
-  externalPoissonLogPmf x lambda
+  if lti x 0 then negf inf
+  else externalPoissonLogPmf x lambda
+let poissonPmf : Float -> Int -> Float = lam lambda. lam x.
+  exp (poissonLogPmf lambda x)
 let poissonSample : Float -> Int = lam lambda.
   externalPoissonSample lambda
 
